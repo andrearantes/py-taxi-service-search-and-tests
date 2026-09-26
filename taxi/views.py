@@ -41,9 +41,16 @@ class ManufacturerListView(LoginRequiredMixin, generic.ListView):
     template_name = "taxi/manufacturer_list.html"
     paginate_by = 5
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        name = self.request.GET.get("name")
+        if name:
+            queryset = queryset.filter(name__icontains=name)
+        return queryset
+
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(ManufacturerListView, self).get_context_data(**kwargs)
-        context["search_form"] = ManufacturerSearchForm()
+        context = super().get_context_data(**kwargs)
+        context["search_form"] = ManufacturerSearchForm(self.request.GET)
         return context
 
 
@@ -69,9 +76,16 @@ class CarListView(LoginRequiredMixin, generic.ListView):
     paginate_by = 5
     queryset = Car.objects.select_related("manufacturer")
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        model = self.request.GET.get("model")
+        if model:
+            queryset = queryset.filter(model__icontains=model)
+        return queryset
+
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(CarListView, self).get_context_data(**kwargs)
-        context["search_form"] = CarSearchForm()
+        context = super().get_context_data(**kwargs)
+        context["search_form"] = CarSearchForm(self.request.GET)
         return context
 
 
@@ -100,9 +114,16 @@ class DriverListView(LoginRequiredMixin, generic.ListView):
     model = Driver
     paginate_by = 5
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        username = self.request.GET.get("username")
+        if username:
+            queryset = queryset.filter(username__icontains=username)
+        return queryset
+
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(DriverListView, self).get_context_data(**kwargs)
-        context["search_form"] = DriverSearchForm()
+        context = super().get_context_data(**kwargs)
+        context["search_form"] = DriverSearchForm(self.request.GET)
         return context
 
 
